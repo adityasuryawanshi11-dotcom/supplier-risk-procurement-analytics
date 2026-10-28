@@ -108,10 +108,23 @@ class AITests(unittest.TestCase):
             result = generate_supplier_brief(data["suppliers"][0], data["weights"])
         self.assertEqual(result, "Example analysis.")
         payload = json.loads(captured["request"].data)
-        self.assertEqual(payload["model"], "gpt-4.1-mini")
+        self.assertEqual(payload["model"], "gpt-6-luna")
+        self.assertEqual(payload["reasoning"], {"effort": "none"})
         self.assertIn("risk_score", payload["input"])
         self.assertNotIn("PO-", payload["input"])
         self.assertNotIn("test-only-key", json.dumps(payload))
+
+    def test_custom_model_does_not_receive_luna_specific_reasoning(self):
+        with make_database() as db:
+            data = report(db)
+        captured = {}
+        def fake_open(request, timeout):
+            captured["payload"] = json.loads(request.data)
+            return MockResponse()
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-only-key", "OPENAI_MODEL": "custom-model"}, clear=True), patch("urllib.request.urlopen", side_effect=fake_open):
+            self.assertEqual(generate_supplier_brief(data["suppliers"][0], data["weights"]), "Example analysis.")
+        self.assertEqual(captured["payload"]["model"], "custom-model")
+        self.assertNotIn("reasoning", captured["payload"])
 
 
 class APITests(unittest.TestCase):

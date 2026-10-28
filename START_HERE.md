@@ -40,7 +40,7 @@ Read `docs/INTERVIEW_GUIDE.md` for the exact Horizon example and questions to pr
 
 ## 4. Optional: enable AI briefs
 
-The app works without AI. To generate a brief, you need your own OpenAI API key, API access and billing as applicable, and an internet connection. A ChatGPT subscription alone is not the same as an API key. Do not share or commit your key.
+The app works without AI. To generate a brief, you need your own OpenAI API key, API access and billing as applicable, and an internet connection. The default model is `gpt-6-luna`. A ChatGPT subscription alone is not the same as an API key. Do not share or commit your key.
 
 In **PowerShell**, from the project folder:
 

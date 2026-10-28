@@ -15,7 +15,7 @@ def generate_supplier_brief(supplier: dict, weights: dict) -> str:
     key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not key:
         raise AIError("Set OPENAI_API_KEY before starting the app to use the optional AI feature.")
-    model = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini").strip()
+    model = os.environ.get("OPENAI_MODEL", "gpt-6-luna").strip()
     # Send only the selected supplier's aggregated fictional metrics, not the raw PO table.
     facts = {k: supplier[k] for k in ("supplier_name", "category", "region", "po_count", "late_rate", "defect_rate", "cost_variance_rate", "geo_exposure", "category_share", "risk_score", "risk_band", "scores", "contributions")}
     facts["weights"] = weights
@@ -28,6 +28,10 @@ def generate_supplier_brief(supplier: dict, weights: dict) -> str:
         "input": "Analyze this fictional supplier aggregate: " + json.dumps(facts),
         "max_output_tokens": 500,
     }
+    # This short, grounded writing task does not need hidden reasoning tokens.
+    # Limit this parameter to Luna; a user-selected model may not support it.
+    if model == "gpt-6-luna":
+        payload["reasoning"] = {"effort": "none"}
     request = urllib.request.Request("https://api.openai.com/v1/responses",
         data=json.dumps(payload).encode("utf-8"),
         headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"}, method="POST")

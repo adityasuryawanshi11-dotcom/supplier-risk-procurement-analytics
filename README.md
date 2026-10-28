@@ -59,7 +59,7 @@ A score below 30 is low, 30 to below 60 is medium, and 60 or above is high. The 
 
 ## Optional generative AI
 
-The dashboard runs without an API key. To enable AI briefs, set `OPENAI_API_KEY` in the **same terminal** before starting the app. Never commit a key to GitHub. The default model is `gpt-4.1-mini`; set `OPENAI_MODEL` to another model available to your API account if desired.
+The dashboard runs without an API key. To enable AI briefs, set `OPENAI_API_KEY` in the **same terminal** before starting the app. Never commit a key to GitHub. The default model is `gpt-6-luna`; set `OPENAI_MODEL` to another model available to your API account if desired. Luna uses `reasoning.effort = none` for this short writing task. API access and billing depend on your account.
 
 Windows PowerShell:
 
