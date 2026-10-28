@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Procurement Intelligence | Supplier Risk</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/dashboard.js" defer></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">P</span><span>PROCUREMENT<br><strong>INTELLIGENCE</strong></span></div>
+    <div class="sidebar-label">WORKSPACE</div>
+    <nav aria-label="Dashboard navigation">
+      <button class="nav-link active" data-view="overview"><span>◫</span> Overview</button>
+      <button class="nav-link" data-view="suppliers"><span>▤</span> Supplier analysis</button>
+      <button class="nav-link" data-view="spend"><span>◔</span> Spend & cost</button>
+      <button class="nav-link" data-view="methodology"><span>≡</span> Methodology</button>
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot"></span> SIMULATED DATA <p>All companies and transactions are fictional.</p></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><span class="eyebrow">SUPPLIER RISK PLATFORM</span><h1 id="page-title">Procurement overview</h1><p id="page-subtitle">Understand your supplier base and prioritize action.</p></div><span class="demo-badge"><span class="status-dot"></span> DEMO DATA</span></header>
+    <section class="filters" aria-label="Dashboard filters">
+      <div class="filter-title"><span class="filter-icon">⌕</span><div><strong>Explore the data</strong><small>Filters apply to the dashboard</small></div></div>
+      <label>PRODUCT CATEGORY<select id="category-filter"><option>All</option></select></label>
+      <label>REGION<select id="region-filter"><option>All</option></select></label>
+      <button class="secondary" id="reset-filters">Reset filters</button>
+      <a class="download" id="export-link" href="/api/export.csv">↓ Export metrics</a>
+    </section>
+    <div id="error" class="alert" hidden role="alert"></div>
+
+    <section id="view-overview" class="view">
+      <div class="section-heading"><div><span class="eyebrow">AT A GLANCE</span><h2>Portfolio performance</h2></div><span class="micro">Metrics reflect the selected filters</span></div>
+      <div class="metric-grid">
+        <article class="metric"><span class="metric-label">TOTAL SPEND</span><strong id="metric-spend">—</strong><small>Actual purchase value</small></article>
+        <article class="metric"><span class="metric-label">PURCHASE ORDERS</span><strong id="metric-orders">—</strong><small id="metric-suppliers">—</small></article>
+        <article class="metric"><span class="metric-label">LATE ORDERS</span><strong id="metric-late">—</strong><small>Share of completed POs</small></article>
+        <article class="metric"><span class="metric-label">DEFECTIVE UNITS</span><strong id="metric-defects">—</strong><small>Share of delivered units</small></article>
+        <article class="metric accent"><span class="metric-label">HIGH-RISK SUPPLIERS</span><strong id="metric-high">—</strong><small>Score of 60 or above</small></article>
+      </div>
+      <div class="columns wide-left">
+        <article class="card"><div class="card-head"><div><span class="eyebrow">PRIORITIZATION</span><h3>Suppliers with the highest risk</h3><p>Weighted risk score · higher means more exposure</p></div><button class="text-button goto-suppliers">View all →</button></div><div id="top-risk" class="bar-list"></div></article>
+        <article class="card"><div class="card-head"><div><span class="eyebrow">RISK MIX</span><h3>Portfolio distribution</h3><p>Suppliers by current risk band</p></div></div><div id="risk-mix"></div><div class="callout"><strong>Where to start</strong><p id="insight-text">—</p></div></article>
+      </div>
+      <article class="card bottom-card"><div class="card-head"><div><span class="eyebrow">SPEND EXPOSURE</span><h3>Spend by category</h3><p>Actual purchase value in the current selection</p></div><button class="text-button goto-spend">Explore spend →</button></div><div id="category-spend" class="category-grid"></div></article>
+    </section>
+
+    <section id="view-suppliers" class="view" hidden>
+      <div class="section-heading"><div><span class="eyebrow">SUPPLIER ANALYSIS</span><h2>Compare and investigate</h2></div><span class="micro">Click a supplier to inspect its risk drivers</span></div>
+      <article class="card"><div class="card-head"><div><h3>Supplier scorecard</h3><p>Ranked by the current weighted score</p></div></div><div class="table-wrap"><table><thead><tr><th>SUPPLIER</th><th>CATEGORY</th><th>POs</th><th>SPEND</th><th>LATE</th><th>DEFECT</th><th>RISK</th></tr></thead><tbody id="supplier-table"></tbody></table></div></article>
+      <div class="columns wide-left bottom-card">
+        <article class="card"><div class="card-head"><div><span class="eyebrow">DRILL DOWN</span><h3>Supplier risk profile</h3><p>Contributions add up to the overall score.</p></div><label class="supplier-picker">SUPPLIER<select id="supplier-select"></select></label></div><div id="supplier-detail"></div></article>
+        <article class="card"><div class="card-head"><div><span class="eyebrow">WHAT-IF ANALYSIS</span><h3>Adjust risk weights</h3><p>Changes apply immediately across the dashboard.</p></div></div><div id="weights"></div><div class="weight-info">Weights are normalized to 100% when calculating the score. <button class="text-button" id="reset-weights">Reset defaults</button></div></article>
+      </div>
+      <article class="card bottom-card"><div class="card-head"><div><span class="eyebrow">OPTIONAL GENERATIVE AI</span><h3>AI supplier brief</h3><p>Generate a written brief from the selected supplier's fictional aggregate metrics.</p></div><button id="ai-button" class="primary">Generate AI brief</button></div><div class="ai-disclosure">Requires an OpenAI API key and internet access. Clicking sends the selected supplier's aggregate data to OpenAI; API usage may be billed. Review generated text before use.</div><div id="ai-output" class="ai-output">Select a supplier and generate a brief. The score and rule-based recommendations above work without AI.</div></article>
+    </section>
+
+    <section id="view-spend" class="view" hidden>
+      <div class="section-heading"><div><span class="eyebrow">SPEND & COST</span><h2>Understand cost exposure</h2></div></div>
+      <div class="metric-grid three"><article class="metric"><span class="metric-label">ACTUAL SPEND</span><strong id="spend-actual">—</strong><small>Units × actual price</small></article><article class="metric"><span class="metric-label">CONTRACTED SPEND</span><strong id="spend-contract">—</strong><small>Units × contracted price</small></article><article class="metric"><span class="metric-label">COST VARIANCE</span><strong id="spend-variance">—</strong><small>Actual vs. contracted</small></article></div>
+      <div class="columns"><article class="card"><div class="card-head"><div><h3>Category spend</h3><p>Compare total actual spend by category.</p></div></div><div id="spend-bars" class="bar-list"></div></article><article class="card"><div class="card-head"><div><h3>Largest suppliers by spend</h3><p>Category share uses all suppliers in the same category, even when filters are applied.</p></div></div><div id="spend-suppliers" class="bar-list"></div></article></div>
+      <div class="callout bottom-card"><strong>Interpretation</strong><p>Cost variance is an observed difference from contracted price, not a measured saving. Category concentration is an indicator for follow-up, not proof that a supplier can be replaced.</p></div>
+    </section>
+
+    <section id="view-methodology" class="view" hidden>
+      <div class="section-heading"><div><span class="eyebrow">TRANSPARENT BY DESIGN</span><h2>How the model works</h2></div></div>
+      <div class="columns"><article class="card prose"><h3>From purchase orders to risk</h3><ol><li>Load the fictional supplier and purchase-order CSVs into an in-memory SQLite database.</li><li>Aggregate purchase-order counts, late deliveries, units, defects, and actual and contracted spend in SQL.</li><li>Convert each metric to a comparable 0–100 risk input using fixed illustrative thresholds.</li><li>Multiply each input by its weight and add the results. A higher score indicates more modeled exposure.</li></ol><p>Low: below 30 · Medium: 30 to below 60 · High: 60 or above. The score is <strong>not a probability</strong> and has not been validated on real supplier outcomes.</p></article><article class="card prose"><h3>Default scoring inputs</h3><div class="method-row"><strong>30% · Delivery</strong><span>Late PO % scaled to 100 at 30%.</span></div><div class="method-row"><strong>25% · Quality</strong><span>Defective-unit % scaled to 100 at 3%.</span></div><div class="method-row"><strong>20% · Cost</strong><span>Positive cost variance scaled to 100 at 10%.</span></div><div class="method-row"><strong>15% · Geography</strong><span>Fictional scenario input from 0–100.</span></div><div class="method-row"><strong>10% · Concentration</strong><span>Category spend share scaled from 25% to 60%.</span></div><p>Every component is capped at 100. Thresholds and geographic values are examples, not industry standards.</p></article></div>
+      <article class="card bottom-card prose"><h3>Data & limitations</h3><p>This demo contains 15 invented suppliers and 900 completed POs. Cost variance is calculated as (actual spend − contracted spend) ÷ contracted spend. A late PO is delivered after its promised date; the defect rate uses total defective units ÷ total units. Spend excludes taxes, freight, and other total-cost factors.</p><p>Category share always uses the complete category's spend as its denominator, even when region filters are applied. The recommendation text is rule-based; AI-generated text is only produced when explicitly requested. See the included README and documentation for a data dictionary, Power BI steps, and interview preparation.</p></article>
+    </section>
+    <footer>PROCUREMENT INTELLIGENCE <span>·</span> SYNTHETIC DEMONSTRATION DATA <span>·</span> BUILT WITH PYTHON + SQLITE</footer>
+  </main>
+</div>
+</body>
+</html>

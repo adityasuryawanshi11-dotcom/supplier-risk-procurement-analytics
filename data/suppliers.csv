@@ -1,0 +1,16 @@
+supplier_id,supplier_name,category,region,geo_exposure
+SUP-001,Atlas Sealworks,Seals,North America,20
+SUP-002,Meridian Gasket Co.,Seals,Europe,45
+SUP-003,Pacifica Polymer,Seals,Asia-Pacific,75
+SUP-004,Northstar Fasteners,Fasteners,North America,20
+SUP-005,Ironbridge Components,Fasteners,Europe,45
+SUP-006,Stratus Hardware,Fasteners,Asia-Pacific,75
+SUP-007,Prairie Motion,Bearings,North America,20
+SUP-008,Vector Bearings,Bearings,Europe,45
+SUP-009,Horizon Rotary,Bearings,Asia-Pacific,75
+SUP-010,Cedar Flow Control,Valves,North America,20
+SUP-011,Andes Valve Works,Valves,Latin America,60
+SUP-012,Eastern Process Parts,Valves,Asia-Pacific,75
+SUP-013,Summit Electrics,Electrical,North America,20
+SUP-014,Beacon Controls,Electrical,Europe,45
+SUP-015,Solstice Industrial,Electrical,Latin America,60
